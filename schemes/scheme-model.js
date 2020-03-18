@@ -68,10 +68,17 @@ function update(changes, id) {
 // Resolves to the removed scheme
 // Resolves to null on an invalid id.
 // (Hint: Only worry about removing the scheme. The database is configured to automatically remove all associated steps.)
-function remove(id) {
-  return db("schemes")
-    .where({ id })
-    .del();
+async function remove(id) {
+  try {
+    const schem = await findById(id);
+    await db("schemes")
+      .where({ id })
+      .del();
+    return schem;
+  } catch (err) {
+    console.log("remove failed, you suck", err);
+    return null;
+  }
 }
 
 function addStep(step, scheme_id) {
